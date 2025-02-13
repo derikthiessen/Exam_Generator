@@ -1,0 +1,28 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f4;
+}
+
+.dropzone {
+    width: 80%;
+    height: 200px;
+    border: 2px dashed #4caf50;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #e8f5e9;
+    color: #4caf50;
+    font-size: 1.2em;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.dropzone.dragover {
+    background-color: #c8e6c9;
+}
