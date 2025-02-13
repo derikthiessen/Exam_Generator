@@ -1,4 +1,8 @@
 const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+const downloadButton = document.getElementById('downloadButton');
+
+dropzone.addEventListener('click', () => fileInput.click());
 
 dropzone.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -13,16 +17,42 @@ dropzone.addEventListener('drop', (e) => {
     e.preventDefault();
     dropzone.classList.remove('dragover');
 
-    const items = e.dataTransfer.items;
-    if (items) {
-        for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-            if (item.kind === 'file') {
-                const file = item.getAsFile();
-                console.log('Dropped file:', file.name);
-            } else if (item.kind === 'string') {
-                console.log('Dropped folder (string data):', item);
-            }
-        }
+    const file = e.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') {
+        uploadFile(file);
+    } else {
+        console.log("Only PDF files are accepted.");
     }
 });
+
+fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file && file.type === 'application/pdf') {
+        uploadFile(file);
+    } else {
+        console.log("Only PDF files are accepted.");
+    }
+});
+
+function uploadFile(file) {
+    const formData = new FormData();
+    formData.append('pdf_file', file);
+
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            downloadButton.style.display = 'inline-block';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function downloadWordDoc() {
+    window.location.href = '/download_word';
+}
