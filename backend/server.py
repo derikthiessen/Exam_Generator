@@ -1,6 +1,4 @@
 from io import BytesIO
-from docx import Document
-import fitz
 from flask import (
     Flask, 
     request, 
@@ -9,6 +7,7 @@ from flask import (
     Response
 )
 from file_handling.file_parser import Parser
+from file_handling.output_file import OutputExam
 
 
 app = Flask(__name__)
@@ -23,9 +22,10 @@ def upload_file() -> tuple[Response, int] | Response:
     if file.filename.endswith('.pdf'):
         pdf_bytes = BytesIO(file.read())
         parser = Parser(pdf_bytes)
-        extracted_text = parser.full_content
+        extracted_text = parser.get_full_content()
 
-        word_file = convert_text_to_word(extracted_text)
+        output_exam = OutputExam(extracted_text)
+        word_file = output_exam.get_word_file()
 
         return send_file(
             word_file,
@@ -36,13 +36,7 @@ def upload_file() -> tuple[Response, int] | Response:
     else:
         return jsonify({'success': False, 'error': 'Only PDF files are allowed'}), 400
 
-def convert_text_to_word(text):
-    doc = Document()
-    doc.add_paragraph(text)
-    word_file = BytesIO()
-    doc.save(word_file)
-    word_file.seek(0)
-    return word_file
+
 
 if __name__ == '__main__':
     app.run(debug=True)
