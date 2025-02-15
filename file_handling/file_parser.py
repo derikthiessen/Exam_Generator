@@ -26,3 +26,9 @@ class Parser:
                 content_per_page[page_num] = page_text
         
         return full_content, content_per_page
+    
+    def get_full_content(self) -> str:
+        return self.full_content
+    
+    def get_content_per_page(self) -> str:
+        return self.content_per_page
